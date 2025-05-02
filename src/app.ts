@@ -1,6 +1,8 @@
 import express from 'express';
 import { Character } from './character.js';
 
+// SSSSSSS
+
 const app = express();
 
 // Middleware para parsear el cuerpo de las peticiones como JSON
