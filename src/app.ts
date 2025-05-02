@@ -3,6 +3,10 @@ import { Character } from './character.js';
 
 const app = express();
 
+// Middleware para parsear el cuerpo de las peticiones como JSON
+// user --> request --> express ~~> middleware que forme req.body (El express.json) --> app.post (req.body) --> response --> user
+app.use(express.json());
+
 // get -> obtener información sobre recursos
 // post -> crear un nuevo recurso
 // delete -> eliminar un recurso
@@ -39,6 +43,10 @@ app.get('/api/characters/:id', (req, res) => {
     return res.status(404).json({ error: 'Character not found' });
   } */
   res.json(character);
+});
+
+app.post('/api/characters', (req, res) => {
+  //req.body
 });
 
 app.listen(3000, () => {

@@ -4,3 +4,17 @@ GET http://localhost:3000/api/characters
 
 ### obtener un character
 GET http://localhost:3000/api/characters/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+
+### crear un character
+POST http://localhost:3000/api/characters
+Content-Type: application/json
+
+{
+ "name": "Luke Skywalker",
+ "characterCalass": "Jedi",
+ "level": 1,
+ "hp": 100,
+ "mana": 100,
+ "attack": 10,
+ "items": ["Lightsaber", "X-Wing"]
+}
