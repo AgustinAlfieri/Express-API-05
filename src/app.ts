@@ -39,6 +39,9 @@ app.get('/api/characters', (req, res) => {
 
 app.get('/api/characters/:id', (req, res) => {
   const character = characters.find((c) => c.id === req.params.id);
+  if (!character) {
+    res.status(404).send({ message: 'Character not found' });
+  }
   res.json(character);
 });
 
@@ -57,6 +60,27 @@ app.post('/api/characters', (req, res) => {
   );
   characters.push(character);
   res.status(201).send({ message: 'Character created', data: character });
+});
+
+app.put('/api/characters/:id', (req, res) => {
+  const characterIndex = characters.findIndex((c) => c.id === req.params.id);
+
+  if (characterIndex === -1) {
+    res.status(404).send({ message: 'Character not found' });
+  }
+  const input = {
+    name: req.body.name,
+    characterClass: req.body.characterClass,
+    level: req.body.level,
+    hp: req.body.hp,
+    mana: req.body.mana,
+    attack: req.body.attack,
+    items: req.body.items,
+  };
+  characters[characterIndex] = { ...characters[characterIndex], ...input };
+  res
+    .status(200)
+    .send({ message: 'Character updated', data: characters[characterIndex] });
 });
 
 app.listen(3000, () => {
