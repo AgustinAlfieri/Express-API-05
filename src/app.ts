@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { Character } from './character/character.entity.js';
+import { CharacterRepository } from './character/character.repository.js';
 
 const app = express();
 
@@ -20,18 +21,7 @@ app.use(express.json());
 // delete /api/characters/:id -> eliminar el character con el id :id
 // put & patch /api/characters/:id -> modificar el character con el id :id
 
-const characters = [
-  new Character(
-    'a02b91bc-3769-4221-beb1-d7a3aeba7dad',
-    'Darth Vader',
-    'Sith',
-    10,
-    100,
-    20,
-    10,
-    ['Lightsaber', 'Death Star']
-  ),
-];
+const repository = new CharacterRepository();
 
 function sanitizeCharacterInput(req: Request, _: Response, next: NextFunction) {
   req.body.sanitizedInput = {
@@ -58,23 +48,16 @@ function sanitizeCharacterInput(req: Request, _: Response, next: NextFunction) {
 }
 
 app.get('/api/characters', (_, res) => {
-  res.json(characters);
+  res.json({ data: repository.findAll() });
 });
 
 app.get('/api/characters/:id', (req, res) => {
-  const character = characters.find((c) => c.id === req.params.id);
-  if (!character) {
-    res.status(404).send({ message: 'Character not found' });
-    return;
-  }
-  res.json(character);
+  res.json({ data: repository.findOne({ id: req.params.id }) });
 });
 
 app.post('/api/characters', sanitizeCharacterInput, (req, res) => {
   const input = req.body.sanitizedInput;
-  const id = crypto.randomUUID();
-  const character = new Character(
-    input.id,
+  const characterInput = new Character(
     input.name,
     input.characterClass,
     input.level,
@@ -83,61 +66,45 @@ app.post('/api/characters', sanitizeCharacterInput, (req, res) => {
     input.attack,
     input.items
   );
-  characters.push(character);
-  res.status(201).send({ message: 'Character created', data: character });
+  repository.add(characterInput);
+  res.status(201).send({ message: 'Character created', data: characterInput });
   return;
 });
 
 app.put('/api/characters/:id', sanitizeCharacterInput, (req, res) => {
-  const characterIndex = characters.findIndex((c) => c.id === req.params.id);
+  req.body.sanitizedInput.id = req.params.id; // Agregamos el id al input para poder actualizar el personaje
+  const character = repository.update(req.body.sanitizedInput);
 
-  if (characterIndex === -1) {
+  if (!character) {
     res.status(404).send({ message: 'Character not found' });
     return;
   }
 
-  characters[characterIndex] = {
-    ...characters[characterIndex],
-    ...req.body.sanitizedInput,
-  };
-  res
-    .status(200)
-    .send({ message: 'Character updated', data: characters[characterIndex] });
+  res.status(200).send({ message: 'Character updated', data: character });
   return;
 });
 
 app.patch('/api/characters/:id', sanitizeCharacterInput, (req, res) => {
-  const characterIndex = characters.findIndex((c) => c.id === req.params.id);
+  req.body.sanitizedInput.id = req.params.id; // Agregamos el id al input para poder actualizar el personaje
+  const character = repository.update(req.body.sanitizedInput);
 
-  if (characterIndex === -1) {
+  if (!character) {
     res.status(404).send({ message: 'Character not found' });
     return;
   }
 
-  characters[characterIndex] = {
-    ...characters[characterIndex],
-    ...req.body.sanitizedInput,
-  };
-
-  // O, alternativamente se podría usar Object.assign
-  /* characters[characterIndex] = Object.assign(
-     characters[characterIndex], req.body.sanitizedInput
-     );
-  */
-  res
-    .status(200)
-    .send({ message: 'Character updated', data: characters[characterIndex] });
+  res.status(200).send({ message: 'Character updated', data: character });
   return;
 });
 
 app.delete('/api/characters/:id', (req, res) => {
-  const characterIndex = characters.findIndex((c) => c.id === req.params.id);
-  if (characterIndex === -1) {
-    //También se podría devolver un 204 No Content. Depende del comportamiento que se quiera tener.
+  const character = repository.delete({ id: req.params.id });
+  if (!character) {
     res.status(404).send({ message: 'Character not found' });
+    return;
   } else {
-    characters.splice(characterIndex, 1);
-    res.status(200).send({ message: 'Character deleted succesfully' });
+    res.status(200).send({ message: 'Character deleted' });
+    return;
   }
 });
 
