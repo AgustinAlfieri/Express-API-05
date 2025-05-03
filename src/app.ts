@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import { Character } from './character.js';
 
 // SSSSSSS
@@ -35,6 +35,22 @@ const characters = [
   ),
 ];
 
+function sanitizeCharacterInput(req: Request, _: Response, next: NextFunction) {
+  req.body.sanitizedInput = {
+    name: req.body.name,
+    characterClass: req.body.characterClass,
+    level: req.body.level,
+    hp: req.body.hp,
+    mana: req.body.mana,
+    attack: req.body.attack,
+    items: req.body.items,
+  };
+  // Acá se debería validar el input, por ejemplo: Tipo de dato, que no haya malware, etc.
+  // Vamos a utilizar posteriormente una librería para validar el input.
+
+  next();
+}
+
 app.get('/api/characters', (req, res) => {
   res.json(characters);
 });
@@ -47,39 +63,34 @@ app.get('/api/characters/:id', (req, res) => {
   res.json(character);
 });
 
-app.post('/api/characters', (req, res) => {
-  const { name, characterClass, level, hp, mana, attack, items } = req.body;
+app.post('/api/characters', sanitizeCharacterInput, (req, res) => {
+  const input = req.body.sanitizedInput;
   const id = crypto.randomUUID();
   const character = new Character(
-    id,
-    name,
-    characterClass,
-    level,
-    hp,
-    mana,
-    attack,
-    items
+    input.id,
+    input.name,
+    input.characterClass,
+    input.level,
+    input.hp,
+    input.mana,
+    input.attack,
+    input.items
   );
   characters.push(character);
   res.status(201).send({ message: 'Character created', data: character });
 });
 
-app.put('/api/characters/:id', (req, res) => {
+app.put('/api/characters/:id', sanitizeCharacterInput, (req, res) => {
   const characterIndex = characters.findIndex((c) => c.id === req.params.id);
 
   if (characterIndex === -1) {
     res.status(404).send({ message: 'Character not found' });
   }
-  const input = {
-    name: req.body.name,
-    characterClass: req.body.characterClass,
-    level: req.body.level,
-    hp: req.body.hp,
-    mana: req.body.mana,
-    attack: req.body.attack,
-    items: req.body.items,
+
+  characters[characterIndex] = {
+    ...characters[characterIndex],
+    ...req.body.sanitizedInput,
   };
-  characters[characterIndex] = { ...characters[characterIndex], ...input };
   res
     .status(200)
     .send({ message: 'Character updated', data: characters[characterIndex] });
