@@ -45,6 +45,14 @@ function sanitizeCharacterInput(req: Request, _: Response, next: NextFunction) {
     attack: req.body.attack,
     items: req.body.items,
   };
+  // Poner este check acá funciona para el patch pero genera problemas con el put porque es posible que se envíen valores undefined
+  Object.keys(req.body.sanitizedInput).forEach((key) => {
+    if (req.body.sanitizedInput[key] === undefined) {
+      // Si el valor es undefined, lo eliminamos
+      delete req.body.sanitizedInput[key];
+    }
+  });
+
   // Acá se debería validar el input, por ejemplo: Tipo de dato, que no haya malware, etc.
   // Vamos a utilizar posteriormente una librería para validar el input.
 
@@ -81,6 +89,22 @@ app.post('/api/characters', sanitizeCharacterInput, (req, res) => {
 });
 
 app.put('/api/characters/:id', sanitizeCharacterInput, (req, res) => {
+  const characterIndex = characters.findIndex((c) => c.id === req.params.id);
+
+  if (characterIndex === -1) {
+    res.status(404).send({ message: 'Character not found' });
+  }
+
+  characters[characterIndex] = {
+    ...characters[characterIndex],
+    ...req.body.sanitizedInput,
+  };
+  res
+    .status(200)
+    .send({ message: 'Character updated', data: characters[characterIndex] });
+});
+
+app.patch('/api/characters/:id', sanitizeCharacterInput, (req, res) => {
   const characterIndex = characters.findIndex((c) => c.id === req.params.id);
 
   if (characterIndex === -1) {
