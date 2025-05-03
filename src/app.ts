@@ -120,6 +120,15 @@ app.patch('/api/characters/:id', sanitizeCharacterInput, (req, res) => {
     .send({ message: 'Character updated', data: characters[characterIndex] });
 });
 
+app.delete('/api/characters/:id', (req, res) => {
+  const characterIndex = characters.findIndex((c) => c.id === req.params.id);
+  if (characterIndex === -1) {
+    //También se podría devolver un 204 No Content. Depende del comportamiento que se quiera tener.
+    res.status(404).send({ message: 'Character not found' });
+  } else characters.splice(characterIndex, 1);
+  res.status(200).send({ message: 'Character deleted succesfully' });
+});
+
 app.listen(3000, () => {
   console.log('Server running on http://localhost:3000');
 });
