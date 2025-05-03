@@ -1,7 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { Character } from './character.js';
-
-// SSSSSSS
+import { Character } from './character/character.entity.js';
 
 const app = express();
 
