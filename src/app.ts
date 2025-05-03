@@ -59,7 +59,7 @@ function sanitizeCharacterInput(req: Request, _: Response, next: NextFunction) {
   next();
 }
 
-app.get('/api/characters', (req, res) => {
+app.get('/api/characters', (_, res) => {
   res.json(characters);
 });
 
@@ -67,6 +67,7 @@ app.get('/api/characters/:id', (req, res) => {
   const character = characters.find((c) => c.id === req.params.id);
   if (!character) {
     res.status(404).send({ message: 'Character not found' });
+    return;
   }
   res.json(character);
 });
@@ -86,6 +87,7 @@ app.post('/api/characters', sanitizeCharacterInput, (req, res) => {
   );
   characters.push(character);
   res.status(201).send({ message: 'Character created', data: character });
+  return;
 });
 
 app.put('/api/characters/:id', sanitizeCharacterInput, (req, res) => {
@@ -93,6 +95,7 @@ app.put('/api/characters/:id', sanitizeCharacterInput, (req, res) => {
 
   if (characterIndex === -1) {
     res.status(404).send({ message: 'Character not found' });
+    return;
   }
 
   characters[characterIndex] = {
@@ -102,6 +105,7 @@ app.put('/api/characters/:id', sanitizeCharacterInput, (req, res) => {
   res
     .status(200)
     .send({ message: 'Character updated', data: characters[characterIndex] });
+  return;
 });
 
 app.patch('/api/characters/:id', sanitizeCharacterInput, (req, res) => {
@@ -109,15 +113,23 @@ app.patch('/api/characters/:id', sanitizeCharacterInput, (req, res) => {
 
   if (characterIndex === -1) {
     res.status(404).send({ message: 'Character not found' });
+    return;
   }
 
   characters[characterIndex] = {
     ...characters[characterIndex],
     ...req.body.sanitizedInput,
   };
+
+  // O, alternativamente se podría usar Object.assign
+  /* characters[characterIndex] = Object.assign(
+     characters[characterIndex], req.body.sanitizedInput
+     );
+  */
   res
     .status(200)
     .send({ message: 'Character updated', data: characters[characterIndex] });
+  return;
 });
 
 app.delete('/api/characters/:id', (req, res) => {
@@ -125,8 +137,15 @@ app.delete('/api/characters/:id', (req, res) => {
   if (characterIndex === -1) {
     //También se podría devolver un 204 No Content. Depende del comportamiento que se quiera tener.
     res.status(404).send({ message: 'Character not found' });
-  } else characters.splice(characterIndex, 1);
-  res.status(200).send({ message: 'Character deleted succesfully' });
+  } else {
+    characters.splice(characterIndex, 1);
+    res.status(200).send({ message: 'Character deleted succesfully' });
+  }
+});
+
+app.use((_, res) => {
+  res.status(404).send({ message: 'Resource not found' });
+  return;
 });
 
 app.listen(3000, () => {
