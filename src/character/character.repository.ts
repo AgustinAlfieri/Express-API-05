@@ -11,7 +11,7 @@ const characters = [
     10,
     ['Lightsaber', 'Death Star'],
     'a02b91bc-3769-4221-beb1-d7a3aeba7dad'
-  ),
+  )
 ];
 
 export class CharacterRepository implements Repository<Character> {
