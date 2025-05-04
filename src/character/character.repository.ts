@@ -51,13 +51,7 @@ export class CharacterRepository implements Repository<Character> {
   }
 
   public async delete(item: { id: string }): Promise<Character | undefined> {
-    const characterIndex = charactersArray.findIndex((c) => c.id === item.id); // Busca el índice del personaje a eliminar
-    if (characterIndex !== -1) {
-      const deletedCharacter = charactersArray[characterIndex]; // Guarda el personaje a eliminar
-      charactersArray.splice(characterIndex, 1); // Elimina el personaje de la lista
-      return await deletedCharacter; // Devuelve el personaje eliminado
-    } else {
-      return await undefined; // Si no lo encuentra, devuelve undefined
-    }
+    const _id = new ObjectId(item.id); // Convierte el id a un ObjectId
+    return (await characters.findOneAndDelete({ _id })) || undefined; // Elimina el personaje de la base de datos y devuelve el documento eliminado
   }
 }
