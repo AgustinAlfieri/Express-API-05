@@ -2,8 +2,12 @@
 ### obtener todos los characters
 GET http://localhost:3000/api/characters
 
-### obtener un character
+### obtener un character por id
+### id es el id del character, no el _id de mongo. El id es el que se genera al crear el character.
 GET http://localhost:3000/api/characters/a02b91bc-3769-4221-beb1-d7a3aeba7dad
+
+### obtener un character por _id 
+GET http://localhost:3000/api/characters/6817a406aa10cea390b5f899
 
 ### crear un character
 POST http://localhost:3000/api/characters

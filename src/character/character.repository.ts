@@ -1,6 +1,7 @@
 import { Repository } from '../shared/repository.js';
 import { Character } from './character.entity.js';
 import { db } from '../shared/db/conn.js';
+import { ObjectId } from 'mongodb';
 
 const charactersArray = [
   new Character(
@@ -28,7 +29,8 @@ export class CharacterRepository implements Repository<Character> {
     return await characters.find().toArray(); // Devuelve todos los personajes
   }
   public async findOne(item: { id: string }): Promise<Character | undefined> {
-    return await charactersArray.find((c) => c.id === item.id); // Busca un personaje por su id
+    const _id = new ObjectId(item.id); // Convierte el id a un ObjectId
+    return (await characters.findOne({ _id })) || undefined; // Busca un personaje por su id
   }
   public async add(item: Character): Promise<Character | undefined> {
     charactersArray.push(item); // Agrega un nuevo personaje a la lista
