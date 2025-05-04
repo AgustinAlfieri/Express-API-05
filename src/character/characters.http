@@ -15,7 +15,7 @@ Content-Type: application/json
 
 {
  "name": "Luke Skywalker",
- "characterCalass": "Jedi",
+ "characterClass": "Jedi",
  "level": 1,
  "hp": 100,
  "mana": 100,

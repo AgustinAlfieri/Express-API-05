@@ -53,13 +53,16 @@ async function add(req: Request, res: Response) {
     input.items
   );
 
-  const character = repository.add(characterInput);
-  res.status(201).json({ data: character });
+  const character = await repository.add(characterInput);
+  res
+    .status(201)
+    .json({ message: 'Character created succesfully', data: character });
+  return;
 }
 
 async function update(req: Request, res: Response) {
   req.body.sanitizedInput.id = req.params.id;
-  const character = repository.update(req.body.sanitizedInput);
+  const character = await repository.update(req.body.sanitizedInput);
 
   if (!character) {
     res.status(404).json({ message: 'Character not found' });
@@ -73,7 +76,7 @@ async function update(req: Request, res: Response) {
 
 async function remove(req: Request, res: Response) {
   const id = req.params.id;
-  const character = repository.delete({ id });
+  const character = await repository.delete({ id });
 
   if (!character) {
     res.status(404).json({ message: 'Character not found' });

@@ -33,8 +33,8 @@ export class CharacterRepository implements Repository<Character> {
     return (await characters.findOne({ _id })) || undefined; // Busca un personaje por su id
   }
   public async add(item: Character): Promise<Character | undefined> {
-    charactersArray.push(item); // Agrega un nuevo personaje a la lista
-    return await item; // Devuelve el personaje agregado
+    item._id = (await characters.insertOne(item)).insertedId; // Inserta un nuevo personaje en la base de datos y obtiene su _id
+    return await item; // Devuelve el personaje insertado
   }
   public async update(item: Character): Promise<Character | undefined> {
     const characterIndex = charactersArray.findIndex((c) => c.id === item.id); // Busca el índice del personaje a actualizar
