@@ -2,6 +2,7 @@ import { Repository } from '../shared/repository.js';
 import { Character } from './character.entity.js';
 import { db } from '../shared/db/conn.js';
 import { ObjectId } from 'mongodb';
+import { sanitizeCharacterInput } from './character.controler.js';
 
 const charactersArray = [
   new Character(
@@ -37,17 +38,18 @@ export class CharacterRepository implements Repository<Character> {
     return await item; // Devuelve el personaje insertado
   }
   public async update(item: Character): Promise<Character | undefined> {
-    const characterIndex = charactersArray.findIndex((c) => c.id === item.id); // Busca el índice del personaje a actualizar
-    if (characterIndex !== -1) {
-      charactersArray[characterIndex] = {
-        ...charactersArray[characterIndex],
-        ...item
-      }; // Actualiza el personaje en la lista
-      return await item; // Devuelve el personaje actualizado
-    } else {
-      return await undefined; // Si no lo encuentra, devuelve undefined
-    }
+    const { id, ...characterInput } = item; // Desestructura el objeto para obtener el id y el resto de las propiedades
+    const _id = new ObjectId(id); // Convierte el id a un ObjectId
+    return (
+      (await characters.findOneAndUpdate(
+        { _id },
+        { $set: characterInput },
+        { returnDocument: 'after' }
+      )) || undefined
+    ); // Actualiza el personaje en la base de datos y devuelve el documento actualizado
+    // Si no lo encuentra, devuelve undefined
   }
+
   public async delete(item: { id: string }): Promise<Character | undefined> {
     const characterIndex = charactersArray.findIndex((c) => c.id === item.id); // Busca el índice del personaje a eliminar
     if (characterIndex !== -1) {
