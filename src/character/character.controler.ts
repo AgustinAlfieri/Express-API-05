@@ -61,8 +61,10 @@ async function add(req: Request, res: Response) {
 }
 
 async function update(req: Request, res: Response) {
-  req.body.sanitizedInput.id = req.params.id;
-  const character = await repository.update(req.body.sanitizedInput);
+  const character = await repository.update(
+    req.params.id,
+    req.body.sanitizedInput
+  );
 
   if (!character) {
     res.status(404).json({ message: 'Character not found' });

@@ -2,20 +2,6 @@ import { Repository } from '../shared/repository.js';
 import { Character } from './character.entity.js';
 import { db } from '../shared/db/conn.js';
 import { ObjectId } from 'mongodb';
-import { sanitizeCharacterInput } from './character.controler.js';
-
-const charactersArray = [
-  new Character(
-    'Darth Vader',
-    'Sith',
-    10,
-    100,
-    20,
-    10,
-    ['Lightsaber', 'Death Star'],
-    'a02b91bc-3769-4221-beb1-d7a3aeba7dad'
-  )
-];
 
 const characters = db.collection<Character>('characters'); // Colección de personajes en la base de datos
 
@@ -37,13 +23,15 @@ export class CharacterRepository implements Repository<Character> {
     item._id = (await characters.insertOne(item)).insertedId; // Inserta un nuevo personaje en la base de datos y obtiene su _id
     return await item; // Devuelve el personaje insertado
   }
-  public async update(item: Character): Promise<Character | undefined> {
-    const { id, ...characterInput } = item; // Desestructura el objeto para obtener el id y el resto de las propiedades
+  public async update(
+    id: string,
+    item: Character
+  ): Promise<Character | undefined> {
     const _id = new ObjectId(id); // Convierte el id a un ObjectId
     return (
       (await characters.findOneAndUpdate(
         { _id },
-        { $set: characterInput },
+        { $set: item },
         { returnDocument: 'after' }
       )) || undefined
     ); // Actualiza el personaje en la base de datos y devuelve el documento actualizado

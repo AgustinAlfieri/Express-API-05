@@ -10,7 +10,6 @@ export class Character {
     public mana: number,
     public attack: number,
     public items: string[],
-    public id = crypto.randomUUID(),
     // The _id field is used by MongoDB to uniquely identify documents in a collection
     // the ? operator is used to indicate that this field is optional
     public _id?: ObjectId
