@@ -14,34 +14,40 @@ const characters = [
   )
 ];
 
+//async hace que la función devuelva una promesa, lo que significa que puede realizar operaciones asíncronas dentro de ella.
+//await se utiliza para esperar a que una promesa se resuelva antes de continuar con la ejecución del código.
+// Una función asíncrona es una función que devuelve una promesa y puede contener la palabra clave await dentro de su cuerpo.
+// La función asíncrona se utiliza para realizar operaciones que pueden tardar un tiempo en completarse,
+// como la lectura de archivos, la consulta a una base de datos o la llamada a una API externa.
+
 export class CharacterRepository implements Repository<Character> {
-  public findAll(): Character[] | undefined {
-    return characters; // Devuelve todos los personajes
+  public async findAll(): Promise<Character[] | undefined> {
+    return await characters; // Devuelve todos los personajes
   }
-  public findOne(item: { id: string }): Character | undefined {
-    return characters.find((c) => c.id === item.id); // Busca un personaje por su id
+  public async findOne(item: { id: string }): Promise<Character | undefined> {
+    return await characters.find((c) => c.id === item.id); // Busca un personaje por su id
   }
-  public add(item: Character): Character | undefined {
+  public async add(item: Character): Promise<Character | undefined> {
     characters.push(item); // Agrega un nuevo personaje a la lista
-    return item; // Devuelve el personaje agregado
+    return await item; // Devuelve el personaje agregado
   }
-  public update(item: Character): Character | undefined {
+  public async update(item: Character): Promise<Character | undefined> {
     const characterIndex = characters.findIndex((c) => c.id === item.id); // Busca el índice del personaje a actualizar
     if (characterIndex !== -1) {
       characters[characterIndex] = { ...characters[characterIndex], ...item }; // Actualiza el personaje en la lista
-      return item; // Devuelve el personaje actualizado
+      return await item; // Devuelve el personaje actualizado
     } else {
-      return undefined; // Si no lo encuentra, devuelve undefined
+      return await undefined; // Si no lo encuentra, devuelve undefined
     }
   }
-  public delete(item: { id: string }): Character | undefined {
+  public async delete(item: { id: string }): Promise<Character | undefined> {
     const characterIndex = characters.findIndex((c) => c.id === item.id); // Busca el índice del personaje a eliminar
     if (characterIndex !== -1) {
       const deletedCharacter = characters[characterIndex]; // Guarda el personaje a eliminar
       characters.splice(characterIndex, 1); // Elimina el personaje de la lista
-      return deletedCharacter; // Devuelve el personaje eliminado
+      return await deletedCharacter; // Devuelve el personaje eliminado
     } else {
-      return undefined; // Si no lo encuentra, devuelve undefined
+      return await undefined; // Si no lo encuentra, devuelve undefined
     }
   }
 }

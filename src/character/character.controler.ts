@@ -4,7 +4,11 @@ import { CharacterRepository } from './character.repository.js';
 
 const repository = new CharacterRepository();
 
-function sanitizeCharacterInput(req: Request, _: Response, next: NextFunction) {
+async function sanitizeCharacterInput(
+  req: Request,
+  _: Response,
+  next: NextFunction
+) {
   req.body.sanitizedInput = {
     name: req.body.name,
     characterClass: req.body.characterClass,
@@ -12,7 +16,7 @@ function sanitizeCharacterInput(req: Request, _: Response, next: NextFunction) {
     hp: req.body.hp,
     mana: req.body.mana,
     attack: req.body.attack,
-    items: req.body.items,
+    items: req.body.items
   };
   // Poner este check acá funciona para el patch pero genera problemas con el put porque es posible que se envíen valores undefined
   Object.keys(req.body.sanitizedInput).forEach((key) => {
@@ -28,15 +32,15 @@ function sanitizeCharacterInput(req: Request, _: Response, next: NextFunction) {
   next();
 }
 
-function findAll(_: Request, res: Response) {
-  res.json({ data: repository.findAll() });
+async function findAll(_: Request, res: Response) {
+  res.json({ data: await repository.findAll() });
 }
 
-function findOne(req: Request, res: Response) {
-  res.json({ data: repository.findOne({ id: req.params.id }) });
+async function findOne(req: Request, res: Response) {
+  res.json({ data: await repository.findOne({ id: req.params.id }) });
 }
 
-function add(req: Request, res: Response) {
+async function add(req: Request, res: Response) {
   const input = req.body.sanitizedInput;
 
   const characterInput = new Character(
@@ -53,7 +57,7 @@ function add(req: Request, res: Response) {
   res.status(201).json({ data: character });
 }
 
-function update(req: Request, res: Response) {
+async function update(req: Request, res: Response) {
   req.body.sanitizedInput.id = req.params.id;
   const character = repository.update(req.body.sanitizedInput);
 
@@ -67,7 +71,7 @@ function update(req: Request, res: Response) {
   return;
 }
 
-function remove(req: Request, res: Response) {
+async function remove(req: Request, res: Response) {
   const id = req.params.id;
   const character = repository.delete({ id });
 
