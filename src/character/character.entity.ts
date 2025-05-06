@@ -1,6 +1,3 @@
-import { ObjectId } from 'mongodb';
-import crypto from 'node:crypto';
-
 export class Character {
   constructor(
     public name: string,
@@ -12,6 +9,6 @@ export class Character {
     public items: string[],
     // The _id field is used by MongoDB to uniquely identify documents in a collection
     // the ? operator is used to indicate that this field is optional
-    public _id?: ObjectId
+    public id?: number
   ) {}
 }
