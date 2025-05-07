@@ -2,8 +2,8 @@
 ### obtener todos los characters
 GET http://localhost:3000/api/characters
 
-### obtener un character por _id 
-GET http://localhost:3000/api/characters/6817cbcce41e7119903d1ae9
+### obtener un character por id 
+GET http://localhost:3000/api/characters/1
 
 ### crear un character
 POST http://localhost:3000/api/characters
@@ -22,7 +22,7 @@ Content-Type: application/json
 ### modificar un character
 ### PUT es idempotente, PATCH no lo es. Esto significa que si haces la misma peticion varias veces, el resultado sera el mismo.
 ### En cambio, PATCH no es idempotente, por lo que si haces la misma peticion varias veces, el resultado sera diferente.
-PUT http://localhost:3000/api/characters/6817cbcce41e7119903d1ae9
+PUT http://localhost:3000/api/characters/1
 Content-Type: application/json
 
 {
@@ -37,7 +37,7 @@ Content-Type: application/json
 
 ### modificar un character (para modificaciones parciales o incrementales)
 ### PATCH es para modificar solo una parte del recurso, no todo el recurso.
-PATCH  http://localhost:3000/api/characters/6817cbcce41e7119903d1ae9
+PATCH  http://localhost:3000/api/characters/1
 Content-Type: application/json
 
 {
@@ -48,4 +48,4 @@ Content-Type: application/json
 }
 
 ### eliminar un character
-DELETE http://localhost:3000/api/characters/6817cbf0e41e7119903d1aea
+DELETE http://localhost:3000/api/characters/1
