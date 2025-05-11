@@ -46,8 +46,9 @@ async function update(req: Request, res: Response) {
     //const characterClass = await em.findOneOrFail(CharacterClass, { id }); // Carga la entidad completa
 
     const characterClass = em.getReference(CharacterClass, id); // Obtiene una referencia a la entidad sin cargarla completamente
-    // Esto se puede hacer porque characterClass no tiene ningún campo que sea un array o una relación con otra entidad
-    // Si tuviera una relación con otra entidad, deberíamos usar findOneOrFail
+
+    // Este update se puede hacer con getReference porque characterClass no tiene ningún campo que seaun array o una relación
+    // con otra entidad. Si tuviera una relación con otra entidad, deberíamos usar findOneOrFail
 
     em.assign(characterClass, req.body); // Actualiza la entidad con los nuevos datos
     await em.flush(); // Guarda los cambios en la base de datos
@@ -61,9 +62,23 @@ async function update(req: Request, res: Response) {
 }
 
 async function remove(req: Request, res: Response) {
-  res.status(500).json({
-    message: 'Not implemented'
-  });
+  try {
+    const id = Number.parseInt(req.params.id);
+    const characterClass = await em.getReference(CharacterClass, id); // Obtiene una referencia a la entidad sin cargarla completamente
+    await em.removeAndFlush(characterClass); // Elimina la entidad y guarda los cambios en la base de datos
+    // remove es un método que elimina la entidad de la base de datos.
+    // removeAndFlush es un método que elimina la entidad y guarda los cambios en la base de datos.
+    // La diferencia es que remove no guarda los cambios en la base de datos, solo elimina la entidad
+    // El remove solo se utiliza cuando voy a eliminar varias entidades a la vez
+    // y no quiero guardar los cambios en la base de datos hasta que haya terminado de eliminar todas las entidades.
+    // El removeAndFlush se utiliza cuando quiero eliminar una entidad y guardar los cambios en la base de datos inmediatamente.
+
+    res.status(200).json({
+      message: 'Character Class deleted'
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
 }
 
 export { findAll, findOne, add, update, remove };
