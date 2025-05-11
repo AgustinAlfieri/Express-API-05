@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import express from 'express';
 import { characterRouter } from './character/character.routes.js';
 import { characterClassRouter } from './character/characterClass.routes.js';
+import { itemRouter } from './character/item.routes.js';
 import { orm, syncSchema } from './shared/db/orm.js';
 import { RequestContext } from '@mikro-orm/core';
 
@@ -16,8 +17,9 @@ app.use((req, res, next) => {
 });
 // Antes de las rutas y middlewares de negocio
 
-app.use('/api/characters/classes', characterClassRouter);
 app.use('/api/characters', characterRouter);
+app.use('/api/characters/classes', characterClassRouter);
+app.use('/api/items', itemRouter);
 
 app.use((_, res) => {
   res.status(404).send({ message: 'Resource not found' });

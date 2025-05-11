@@ -1,0 +1,30 @@
+@id = 1
+
+### GET ALL
+GET http://localhost:3000/api/items
+
+### GET BY ID
+GET http://localhost:3000/api/items/{{id}}
+
+### POST
+POST http://localhost:3000/api/items
+Content-Type: application/json
+
+{
+  "name": "Lightsaber",
+  "description": "A weapon used by Jedi and Sith, capable of cutting through almost anything."
+}
+
+### PUT
+PUT http://localhost:3000/api/items/{{id}}
+Content-Type: application/json
+
+{
+  "name": "ARK2-Blaster",
+  "description": "A ranged weapon that fires bolts of energy, commonly used by bounty hunters and smugglers."
+}
+
+@id = 2
+
+### DELETE
+DELETE http://localhost:3000/api/items/{{id}}
