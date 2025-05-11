@@ -10,13 +10,13 @@ POST http://localhost:3000/api/characters
 Content-Type: application/json
 
 {
- "name": "Darth Vader",
- "characterClass": 1,
- "level": 60,
- "hp": 100,
- "mana": 100,
- "attack": 10,
- "items": [1,3]
+  "name": "Luke Skywalker",
+  "characterClass": 2,
+  "level": 1,
+  "hp": 100,
+  "mana": 200,
+  "attack": 50,
+  "items": [3]
 }
 
 ### modificar un character
@@ -48,4 +48,4 @@ Content-Type: application/json
 }
 
 ### eliminar un character
-DELETE http://localhost:3000/api/characters/1
+DELETE http://localhost:3000/api/characters/3
