@@ -10,13 +10,13 @@ POST http://localhost:3000/api/characters
 Content-Type: application/json
 
 {
- "name": "Luke Skywalker",
- "characterClass": "Jedi",
- "level": 1,
+ "name": "Darth Vader",
+ "characterClass": 1,
+ "level": 60,
  "hp": 100,
  "mana": 100,
  "attack": 10,
- "items": ["Lightsaber", "X-Wing"]
+ "items": [1,3]
 }
 
 ### modificar un character

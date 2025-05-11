@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { Character } from './character.entity.js';
+import { orm } from '../shared/db/orm.js';
+
+const em = orm.em;
 
 async function sanitizeCharacterInput(req: Request, _: Response, next: NextFunction) {
   req.body.sanitizedInput = {
@@ -11,25 +14,29 @@ async function sanitizeCharacterInput(req: Request, _: Response, next: NextFunct
     attack: req.body.attack,
     items: req.body.items
   };
-  // Poner este check acá funciona para el patch pero genera problemas con el put porque es posible que se envíen valores undefined
   Object.keys(req.body.sanitizedInput).forEach((key) => {
     if (req.body.sanitizedInput[key] === undefined) {
-      // Si el valor es undefined, lo eliminamos
       delete req.body.sanitizedInput[key];
     }
   });
-
-  // Acá se debería validar el input, por ejemplo: Tipo de dato, que no haya malware, etc.
-  // Vamos a utilizar posteriormente una librería para validar el input.
-
   next();
 }
 
 async function findAll(_: Request, res: Response) {
-  res.status(500).json({
-    message: 'Not implemented'
-  });
+  try {
+    const characters = await em.find(Character, {}, { populate: ['characterClass', 'items'] });
+    // populate: ['characterClass', 'items'] es una opción de MikroORM que permite cargar las relaciones
+    res.status(200).json({
+      message: 'Found all characters',
+      data: characters
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
 }
+
 async function findOne(req: Request, res: Response) {
   res.status(500).json({
     message: 'Not implemented'
@@ -37,9 +44,18 @@ async function findOne(req: Request, res: Response) {
 }
 
 async function add(req: Request, res: Response) {
-  res.status(500).json({
-    message: 'Not implemented'
-  });
+  try {
+    const character = em.create(Character, req.body.sanitizedInput);
+    await em.flush();
+    res.status(201).json({
+      message: 'Character created',
+      data: character
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
 }
 
 async function update(req: Request, res: Response) {
