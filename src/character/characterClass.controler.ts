@@ -40,9 +40,24 @@ async function add(req: Request, res: Response) {
 }
 
 async function update(req: Request, res: Response) {
-  res.status(500).json({
-    message: 'Not implemented'
-  });
+  try {
+    const id = Number.parseInt(req.params.id);
+
+    //const characterClass = await em.findOneOrFail(CharacterClass, { id }); // Carga la entidad completa
+
+    const characterClass = em.getReference(CharacterClass, id); // Obtiene una referencia a la entidad sin cargarla completamente
+    // Esto se puede hacer porque characterClass no tiene ningún campo que sea un array o una relación con otra entidad
+    // Si tuviera una relación con otra entidad, deberíamos usar findOneOrFail
+
+    em.assign(characterClass, req.body); // Actualiza la entidad con los nuevos datos
+    await em.flush(); // Guarda los cambios en la base de datos
+    res.status(200).json({
+      message: 'Character Class updated',
+      data: characterClass
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
 }
 
 async function remove(req: Request, res: Response) {

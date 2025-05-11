@@ -11,9 +11,21 @@ Content-Type: application/json
   "description": "A Jedi Padawan is a young Jedi in training, learning the ways of the Force and lightsaber combat."
 }
 
+
 ### ID
-@id = {{createCharacterClass.response.body.data.id}}
+//@id = {{createCharacterClass.response.body.data.id}}
+@id = 1
 
 ### GET ONE BY ID
 #  @name getCharacterClassById
 GET http://localhost:3000/api/characters/classes/{{id}}
+
+### PUT
+#  @name updateCharacterClass
+PUT http://localhost:3000/api/characters/classes/{{id}}
+Content-Type: application/json
+
+{
+  "name": "Sith Lord",
+  "description": "A Sith Lord is a powerful dark side user, often serving as a master to an apprentice and seeking to dominate the galaxy."
+}
