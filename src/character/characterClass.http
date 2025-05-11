@@ -7,6 +7,13 @@ POST http://localhost:3000/api/characters/classes
 Content-Type: application/json
 
 {
-  "name": "Sith Lord",
-  "description": "A master of the dark side of the Force, wielding immense power and knowledge."
+  "name": "Jedi Padawan",
+  "description": "A Jedi Padawan is a young Jedi in training, learning the ways of the Force and lightsaber combat."
 }
+
+### ID
+@id = {{createCharacterClass.response.body.data.id}}
+
+### GET ONE BY ID
+#  @name getCharacterClassById
+GET http://localhost:3000/api/characters/classes/{{id}}
