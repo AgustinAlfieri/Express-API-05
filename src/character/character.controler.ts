@@ -38,9 +38,18 @@ async function findAll(_: Request, res: Response) {
 }
 
 async function findOne(req: Request, res: Response) {
-  res.status(500).json({
-    message: 'Not implemented'
-  });
+  try {
+    const id = Number.parseInt(req.params.id);
+    const character = await em.findOneOrFail(Character, { id }, { populate: ['characterClass', 'items'] });
+    res.status(200).json({
+      message: 'Found character',
+      data: character
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
 }
 
 async function add(req: Request, res: Response) {
