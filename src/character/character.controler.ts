@@ -68,9 +68,20 @@ async function add(req: Request, res: Response) {
 }
 
 async function update(req: Request, res: Response) {
-  res.status(500).json({
-    message: 'Not implemented'
-  });
+  try {
+    const id = Number.parseInt(req.params.id);
+    const character = await em.findOneOrFail(Character, { id });
+    em.assign(character, req.body.sanitizedInput);
+    await em.flush();
+    res.status(200).json({
+      message: 'Character updated',
+      data: character
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
 }
 
 async function remove(req: Request, res: Response) {

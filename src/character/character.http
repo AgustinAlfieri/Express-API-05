@@ -22,29 +22,17 @@ Content-Type: application/json
 ### modificar un character
 ### PUT es idempotente, PATCH no lo es. Esto significa que si haces la misma peticion varias veces, el resultado sera el mismo.
 ### En cambio, PATCH no es idempotente, por lo que si haces la misma peticion varias veces, el resultado sera diferente.
-PUT http://localhost:3000/api/characters/1
+PUT http://localhost:3000/api/characters/2
 Content-Type: application/json
 
 {
  "name": "Anakin Skywalker",
- "characterClass": "Jedi",
+ "characterClass": 2,
  "level": 50,
  "hp": 300,
  "mana": 500,
  "attack": 100,
- "items": ["Lightsaber", "R2-D2"]
-}
-
-### modificar un character (para modificaciones parciales o incrementales)
-### PATCH es para modificar solo una parte del recurso, no todo el recurso.
-PATCH  http://localhost:3000/api/characters/1
-Content-Type: application/json
-
-{
- "name": "Anakin Skywalker",
- "characterClass": "Jedi",
- "level": 70,
- "items": ["Lightsaber", "R2-D2", "501st Legion"]
+ "items": [3]
 }
 
 ### eliminar un character
